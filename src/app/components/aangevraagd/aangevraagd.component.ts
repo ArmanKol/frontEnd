@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from '../data.service';
+import { DataService } from 'src/app/services/data_service/data.service';
 
 @Component({
   selector: 'app-aangevraagd',
@@ -21,7 +21,7 @@ export class AangevraagdComponent implements OnInit {
             console.log("gelukt")
             console.log(this.aanvragenlijst[this.i].key)
             this.selectedAanvraag  == item.payload.val();
-          } 
+          }
           else{
             this.i+= 1;
           }

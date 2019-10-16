@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators} from "@angular/forms";
-import { AngularFireDatabase, AngularFireList} from 'angularfire2/database';
-import { Lokaal } from './lokaal';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireDatabase} from 'angularfire2/database';
+import { Lokaal } from 'src/app/models/lokaal';
 
 @Injectable({
   providedIn: 'root'

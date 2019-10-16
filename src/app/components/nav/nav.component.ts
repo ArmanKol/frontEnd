@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthguardService } from '../authguard.service';
+import { AuthguardService } from 'src/app/services/auth_guard_service/authguard.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({

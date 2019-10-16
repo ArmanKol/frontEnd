@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase';
-import { AuthenticationService } from '../authentication.service';
+import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 import { Router } from '@angular/router';
 
 //declare var gapi: any;

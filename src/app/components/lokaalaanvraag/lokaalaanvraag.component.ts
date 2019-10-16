@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LokaalserviceService } from '../lokaalservice.service';
-import { Aanvraag } from '../aanvraag';
-import { AangevraagdComponent } from '../aangevraagd/aangevraagd.component';
-import { AuthenticationService } from '../authentication.service';
+import { LokaalserviceService } from 'src/app/services/lokaal_service/lokaalservice.service';
+import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import * as moment from 'moment'

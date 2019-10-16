@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {LokaalserviceService} from 'src/app/lokaalservice.service';
+import {LokaalserviceService} from 'src/app/services/lokaal_service/lokaalservice.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 

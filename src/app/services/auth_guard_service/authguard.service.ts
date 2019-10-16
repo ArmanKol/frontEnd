@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 })
 export class AuthguardService implements CanActivate {
 
-  constructor( 
+  constructor(
      private authenticationService: AuthenticationService,
      private router: Router,
      private firebaseAuth: AngularFireAuth,

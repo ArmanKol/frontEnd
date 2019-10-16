@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LokaalserviceService } from '../lokaalservice.service';
-import {NgxQRCodeModule} from 'ngx-qrcode2';
+import { LokaalserviceService } from 'src/app/services/lokaal_service/lokaalservice.service';
 
 @Component({
   selector: 'app-lokaalaangevraagd',

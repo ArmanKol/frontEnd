@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {OnInit} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import {DataService} from 'src/app/data.service';
+import {DataService} from 'src/app/services/data_service/data.service';
 
 @Component({
   selector: 'qr-code',

@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase, AngularFireList} from 'angularfire2/database';
 
 import { FormControl, FormGroup, Validators} from "@angular/forms";
-import { Aanvraag } from './aanvraag';
-import { AanvraagComponent } from './aanvraag/aanvraag.component';
+import { Aanvraag } from 'src/app/models/aanvraag';
 
 @Injectable({
   providedIn: 'root'

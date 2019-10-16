@@ -1,5 +1,5 @@
-import { Component, OnInit, Injectable } from '@angular/core';
-import { DataService } from '../data.service';
+import { Component, OnInit } from '@angular/core';
+import { DataService } from 'src/app/services/data_service/data.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
