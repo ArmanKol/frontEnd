@@ -1,0 +1,37 @@
+<div *ngIf="isLoggedIn()">
+    <button class="btn btn-succes" (click)="logout()">Logout</button>
+</div>
+<form class="form-inline">
+      </form>
+      <table class="table table-sm">
+        <thead>
+          <th>Naam</th>
+          <th>Email</th>
+          <th>Opleiding</th>
+          <th>Achternaam</th>
+          <th>Studentnummer</th>
+          <th>Wachtwoord</th>
+        </thead>
+        <ng-container *ngFor="let aanvraag of aanvragenlijst">
+          <tr class="table-dark">
+            <td>{{aanvraag.naam}}</td>
+            <td>{{aanvraag.email}}</td>
+            <td>{{aanvraag.opleiding}}</td>
+            <td>{{aanvraag.achternaam}}</td>
+            <td>{{aanvraag.studentnummer}}</td>
+            <td>{{aanvraag.wachtwoord}}</td>
+            <td>
+                <button class="btn btn-outline-info" (click)="onSubmit(aanvraag.key, aanvraag.wachtwoord, aanvraag.email)">account verzoek goedkeuren</button>
+                <button class="btn btn-outline-danger" (click)="onDelete(aanvraag.key)">account verzoek afwijzen</button>
+            </td>
+          </tr>
+        </ng-container>
+      </table>
+      <div class="alert alert-danger" *ngIf="showDeletedMessage">
+        accountverzoek afgewezen.
+</div>
+<div class="alert alert-danger" *ngIf="showLokaalMessage">
+  accountverzoek goedgekeurd.
+</div>
+<app-lokaalaangevraagd></app-lokaalaangevraagd>
+

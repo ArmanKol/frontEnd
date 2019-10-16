@@ -1,0 +1,21 @@
+<div>
+<div *ngIf="!isLoggedIn()"  class="form-group">
+    <h1>Log in met Google:</h1>
+    <button class="btn btn-succes" (click)="login()">Login with Google</button>
+</div>
+<div *ngIf="isLoggedIn()" class="form-group">
+    <button class="btn btn-succes" (click)="logout()">Logout</button>
+</div>
+<div class="form-group">
+    <h2>Login met Email en Wachtwoord:</h2>
+    <form #formData='ngForm' #f="ngForm">
+        <div class="form-group">
+        <input type="text" placeholder="Email adress" [(ngModel)]="Email" name="email" id="Email" class="txt" required>
+        </div>
+        <div class="form-group">
+        <input type="password" placeholder="password" [(ngModel)]="Wachtwoord" name="Wachtwoord" id="Wachtwoord" class="txt" required>
+        </div>
+        <button (click)="customLogin()" [disabled]="!formData.valid" class="btn btn-succes">Log in</button>
+    </form>
+</div>
+</div>

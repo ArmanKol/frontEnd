@@ -1,0 +1,4 @@
+<div id="qrReader">
+<h1>Webcam</h1>
+<zxing-scanner id="scanner" [formats]="['QR_CODE']" (scanSuccess)="handleQrCodeResult($event)"></zxing-scanner>
+</div>

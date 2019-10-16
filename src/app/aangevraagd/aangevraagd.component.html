@@ -1,0 +1,10 @@
+<select #selectElem (click)="getSelectedGegevens(selectElem.value)">
+    <option *ngFor="let aanvraag of aanvragenlijst" [value]="aanvraag.key">
+        {{aanvraag.naam}} + {{aanvraag.studentnummer}}
+    </option>
+</select>
+<div>
+    <p>{{selectedAanvraag}}</p>
+    <p></p>
+</div>
+

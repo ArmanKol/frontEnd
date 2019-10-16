@@ -1,0 +1,16 @@
+<header>
+    <div class="container">
+      <a routerLink="/" class="logo">apptitle</a>
+      <nav>
+        <ul>
+          <li ><a routerLink="/">Home</a></li>
+          <li><a routerLink="/header">Registreren</a></li>
+          <li *ngIf="isAdmin()"><a routerLink="/aanvraag">aangevraagd</a></li>
+          <li><a routerLink="/code">Lokaal reservatie/qrCode</a></li>
+          <li *ngIf="isAdmin()"><a routerLink="/codeReader">qrCode reader</a></li>
+          <li><a routerLink="/googleAgenda">GoogleAgenda</a></li>
+          <li><a routerLink="/lokaalaanvraag">Lokaal Reserveren</a></li>
+        </ul>
+      </nav>
+    </div>
+</header>

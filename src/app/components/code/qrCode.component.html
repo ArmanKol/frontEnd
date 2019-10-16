@@ -1,0 +1,16 @@
+<div id="qrCodes">
+    <table class="table table-sm">
+      <thead>
+        <th>Begintijd</th>
+        <th>Eindtijd</th>
+        <th>Qr code</th>
+      </thead>
+      <ng-container *ngFor="let item of displayItems">
+        <tr class="table-dark">
+          <td>{{item.begintijd}}</td>
+          <td>{{item.eindtijd}}</td>
+          <td><img src="{{item.base64}}"></td>
+        </tr>
+      </ng-container>
+    </table>
+</div>
