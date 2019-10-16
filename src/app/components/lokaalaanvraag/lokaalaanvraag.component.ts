@@ -3,10 +3,9 @@ import { LokaalserviceService } from 'src/app/services/lokaal_service/lokaalserv
 import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { GoogleAPI } from 'src/app/services/googleAPI_service/googleAPI.service';
 import * as moment from 'moment'
 
-
-declare var gapi: any;
 @Component({
   selector: 'app-lokaalaanvraag',
   templateUrl: './lokaalaanvraag.component.html',
@@ -19,35 +18,28 @@ export class LokaalaanvraagComponent implements OnInit {
   showNotSuccessMessage: boolean;
   showLokaalMessage: boolean;
   showDeletedMessage: boolean;
-  calendarItems: any[];
+  afsprakenDagItems: any[];
 
   constructor(private lokaalaanvraag: LokaalserviceService,
     private firebaseAuth: AngularFireAuth,
     private authenticationService: AuthenticationService,
     private router: Router,
+    private googleapi: GoogleAPI
     )
   {
-    this.initClient();
+  this.googleapi.initClient();
   }
 
   async onSubmit(){
-    moment.locale('nl');
-    const events = await gapi.client.calendar.events.list({
-      calendarId: 'hu.nl_moi2lsgoco29i3cpodfuhbpl64@group.calendar.google.com',
-      timeMin: new Date().toISOString(),
-      showDeleted: false,
-      singleEvents: true,
-      maxResults: 10,
-      orderBy: 'startTime'
-    });
-    this.calendarItems = events.result.items;
-    for(let item of this.calendarItems){
-      if(moment(item.start.dateTime).format('YYYY-MM-DD') === (<HTMLInputElement>document.getElementById("datum")).value){
-        if(!(moment(item.start.dateTime).format('LT') === (<HTMLInputElement>document.getElementById("begintijd")).value) ||
-        (<HTMLInputElement>document.getElementById("begintijd")).value <= moment(item.start.dateTime).subtract(0.5, 'hours').format('LT') ||
-         (<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(item.start.dateTime).format('LT')){
-           if((<HTMLInputElement>document.getElementById("begintijd")).value >= moment(item.end.dateTime).format('LT') ||
-                (<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(item.start.dateTime).format('LT') ){
+    await this.googleapi.getCalendarItems();
+    this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value);
+    /*for(let item of this.calendarItems){
+      AFGEHANDELD if(moment(item.start.dateTime).format('YYYY-MM-DD') === (<HTMLInputElement>document.getElementById("datum")).value){
+      AFGEHANDELD  if(!(moment(item.start.dateTime).format('LT') === (<HTMLInputElement>document.getElementById("begintijd")).value) ||
+      AFGEHANDELD  (<HTMLInputElement>document.getElementById("begintijd")).value <= moment(item.start.dateTime).subtract(0.5, 'hours').format('LT') ||
+      AFGEHANDELD   (<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(item.start.dateTime).format('LT')){
+      AFGEHANDELD     if((<HTMLInputElement>document.getElementById("begintijd")).value >= moment(item.end.dateTime).format('LT') ||
+      AFGEHANDELD          (<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(item.start.dateTime).format('LT') ){
              if(this.lokaalaanvraag.form.valid){
                if(this.lokaalaanvraag.form.get('$key').value == null){
                  this.lokaalaanvraag.insertLokaalAanvraag(this.lokaalaanvraag.form.value, this.firebaseAuth.auth.currentUser);
@@ -80,24 +72,71 @@ export class LokaalaanvraagComponent implements OnInit {
           }
         }
       }
+    }*/
+  }
+
+
+  checkBegintijd_GroterDan_AfspraakEindtijd(){
+    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
+      if((<HTMLInputElement>document.getElementById("begintijd")).value >= moment(afspraak.end.dateTime).format('LT')){
+        return true;
+      }else{
+        return false;
+      }
     }
   }
 
-  initClient() {
-    gapi.load('client', () => {
-      console.log('loaded client')
+  checkEindtijd_KleinerDan_AfspraakBegintijd(){
+    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
+      if((<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(afspraak.start.dateTime).format('LT')){
+        return true;
+      }else{
+        return false;
+      }
+    }
+  }
 
-      // It's OK to expose these credentials, they are client safe.
-      gapi.client.init({
-        apiKey: 'AIzaSyCunfk0MfhF-NG74tFty8rFLdMwE3_HjJk',
-        clientId: '787618951029-90q95kchei08btpdk8r564io5jvbu7nb.apps.googleusercontent.com',
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-        scope: 'https://www.googleapis.com/auth/calendar'
-      })
+  checkBegintijd_HalfuurEerderDan_AfspraakTijd(){
+    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
+      if((<HTMLInputElement>document.getElementById("begintijd")).value <= moment(afspraak.start.dateTime).subtract(0.5, 'hours').format('LT')){
+        return true;
+      }else{
+        return false;
+      }
+    }
+  }
 
-      gapi.client.load('calendar', 'v3', () => console.log('loaded calendar'));
+  checkBegintijd_NietHetzelfde(){
+    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
+      if(!(moment(afspraak.start.dateTime).format('LT') === (<HTMLInputElement>document.getElementById("begintijd")).value)){
+        return true;
+      }else{
+        return false;
+      }
+    }
+  }
 
-    });
+  checkTijd(){
+    if(true){
+
+    }
+  }
+
+  getAfsprakenOpDag(datum: string){
+    moment.lang('nl');
+    var items = new Array();
+    for(let item of this.googleapi.calendarItems){
+      if(moment(item.start.dateTime).format('YYYY-MM-DD') === datum){
+        items.push(item);
+      }else{
+        return null;
+      }
+    }
+    return items;
+  }
+
+  volledigeCheck(){
+    
   }
 
   isLoggedIn(): boolean {

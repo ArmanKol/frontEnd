@@ -11,7 +11,7 @@ export class AangevraagdComponent implements OnInit {
   constructor(private aanvraag: DataService) { }
 
   aanvragenlijst = [];
-  selectedAanvraag;
+  selectedAanvraag: any;
   i= 0;
 
   getSelectedGegevens(event: any){

@@ -4,7 +4,6 @@ import { auth } from 'firebase';
 import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 import { Router } from '@angular/router';
 
-//declare var gapi: any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -34,8 +33,6 @@ export class LoginComponent implements OnInit {
   }
 
   customLogin(){
-    console.log(this.Email);
-    console.log(this.Wachtwoord);
     if(this.Email === "admin@admin.com"){
       this.firebaseAuth.auth.signInWithEmailAndPassword(
         this.Email,

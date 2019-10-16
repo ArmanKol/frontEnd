@@ -3,11 +3,11 @@ import { DataService } from 'src/app/services/data_service/data.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  selector: 'app-registreren',
+  templateUrl: './registreer.component.html',
+  styleUrls: ['./registreer.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class RegistreerComponent implements OnInit {
   constructor(private aanvraag: DataService, public Auth: AngularFireAuth,){}
 
   showSuccessMessage: boolean;
@@ -18,7 +18,6 @@ export class HeaderComponent implements OnInit {
   Wachtwoord: string;
 
   onSubmit(){
-    console.log(this.formControls);
     if(this.aanvraag.form.valid){
       if(this.aanvraag.form.get('$key').value == null){
         this.aanvraag.insertAanvraag(this.aanvraag.form.value);

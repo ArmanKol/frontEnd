@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthguardService } from 'src/app/services/auth_guard_service/authguard.service';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 
 @Component({
   selector: 'app-nav',
@@ -10,22 +10,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 export class NavComponent implements OnInit {
 
 
-  constructor(public AuthGuard: AuthguardService, private firebaseAuth: AngularFireAuth) { }
-
-  Email: string;
+  constructor(public authGuard: AuthguardService, private authentication: AuthenticationService) { }
 
   ngOnInit() {
-    this.isAdmin();
-  }
-
-  isAdmin(): boolean{
-    if(!(this.Email === null)){
-      this.Email = this.firebaseAuth.auth.currentUser.email;
-      if( this.Email === "admin@admin.com"){
-        return true;
-    }else{
-      return false;
-      }
-    }
+    this.authentication.isAdmin();
   }
 }
