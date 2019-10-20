@@ -37,8 +37,7 @@ import { GoogleAPI } from './services/googleAPI_service/googleAPI.service';
     QrCode,
     QrCodeReader,
     GoogleAgenda,
-    LoginComponent,
-    GoogleAPI
+    LoginComponent
 
   ],
   imports: [
@@ -54,7 +53,7 @@ import { GoogleAPI } from './services/googleAPI_service/googleAPI.service';
     ZXingScannerModule
 
   ],
-  providers: [DataService, LokaalserviceService, AuthguardService],
+  providers: [DataService, LokaalserviceService, AuthguardService, GoogleAPI],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

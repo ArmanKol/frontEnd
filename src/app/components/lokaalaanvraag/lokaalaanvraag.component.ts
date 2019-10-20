@@ -18,7 +18,6 @@ export class LokaalaanvraagComponent implements OnInit {
   showNotSuccessMessage: boolean;
   showLokaalMessage: boolean;
   showDeletedMessage: boolean;
-  afsprakenDagItems: any[];
 
   constructor(private lokaalaanvraag: LokaalserviceService,
     private firebaseAuth: AngularFireAuth,
@@ -32,75 +31,48 @@ export class LokaalaanvraagComponent implements OnInit {
 
   async onSubmit(){
     await this.googleapi.getCalendarItems();
-    this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value);
-    /*for(let item of this.calendarItems){
-      AFGEHANDELD if(moment(item.start.dateTime).format('YYYY-MM-DD') === (<HTMLInputElement>document.getElementById("datum")).value){
-      AFGEHANDELD  if(!(moment(item.start.dateTime).format('LT') === (<HTMLInputElement>document.getElementById("begintijd")).value) ||
-      AFGEHANDELD  (<HTMLInputElement>document.getElementById("begintijd")).value <= moment(item.start.dateTime).subtract(0.5, 'hours').format('LT') ||
-      AFGEHANDELD   (<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(item.start.dateTime).format('LT')){
-      AFGEHANDELD     if((<HTMLInputElement>document.getElementById("begintijd")).value >= moment(item.end.dateTime).format('LT') ||
-      AFGEHANDELD          (<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(item.start.dateTime).format('LT') ){
-             if(this.lokaalaanvraag.form.valid){
-               if(this.lokaalaanvraag.form.get('$key').value == null){
-                 this.lokaalaanvraag.insertLokaalAanvraag(this.lokaalaanvraag.form.value, this.firebaseAuth.auth.currentUser);
-                 this.showSuccessMessage = true;
-                 setTimeout(() => this.showSuccessMessage = false, 3000);
-                 break;
-               }
-             }
-             else{
-               this.showNotSuccessMessage = true;
-               setTimeout(() => this.showSuccessMessage = false, 3000);
-             }
-           }else{
-             this.showNotSuccessMessage = true;
-             alert("Op dit moment is het lokaal in gebruik van: "+moment(item.start.dateTime).format('LT')+" tot "+moment(item.end.dateTime).format('LT'));
-             setTimeout(() => this.showSuccessMessage = false, 3000);
-           }
-        }else{
-          this.showNotSuccessMessage = true;
-          alert("Op dit moment is het lokaal in gebruik van: "+moment(item.start.dateTime).format('LT')+" tot "+moment(item.end.dateTime).format('LT'));
-          setTimeout(() => this.showSuccessMessage = false, 3000);
-        }
-      }else{
-        if(this.lokaalaanvraag.form.valid){
-          if(this.lokaalaanvraag.form.get('$key').value == null){
-            this.lokaalaanvraag.insertLokaalAanvraag(this.lokaalaanvraag.form.value, this.firebaseAuth.auth.currentUser);
-            this.showSuccessMessage = true;
-            setTimeout(() => this.showSuccessMessage = false, 3000);
-            break;
-          }
-        }
-      }
-    }*/
+
+    if(this.volledigeCheck() && this.lokaalaanvraag.form.valid && this.lokaalaanvraag.form.get('$key').value == null){
+      //this.lokaalaanvraag.insertLokaalAanvraag(this.lokaalaanvraag.form.value, this.firebaseAuth.auth.currentUser);
+      this.showSuccessMessage = true;
+      setTimeout(() => this.showSuccessMessage = false, 3000);
+    }else{
+      //alert("Op dit moment is het lokaal in gebruik van: "+moment(item.start.dateTime).format('LT')+" tot "+moment(item.end.dateTime).format('LT'));
+    }
   }
 
 
-  checkBegintijd_GroterDan_AfspraakEindtijd(){
+  checkBegintijd_GroterDan_AgendaEindtijd(){
     for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
       if((<HTMLInputElement>document.getElementById("begintijd")).value >= moment(afspraak.end.dateTime).format('LT')){
         return true;
       }else{
+        this.showNotSuccessMessage = true;
+        setTimeout(() => this.showSuccessMessage = false, 3000);
         return false;
       }
     }
   }
 
-  checkEindtijd_KleinerDan_AfspraakBegintijd(){
+  checkEindtijd_KleinerDan_AgendaBegintijd(){
     for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
       if((<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(afspraak.start.dateTime).format('LT')){
         return true;
       }else{
+        this.showNotSuccessMessage = true;
+        setTimeout(() => this.showSuccessMessage = false, 3000);
         return false;
       }
     }
   }
 
-  checkBegintijd_HalfuurEerderDan_AfspraakTijd(){
+  checkBegintijd_HalfuurEerderDan_AgendaTijd(){
     for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
       if((<HTMLInputElement>document.getElementById("begintijd")).value <= moment(afspraak.start.dateTime).subtract(0.5, 'hours').format('LT')){
         return true;
       }else{
+        this.showNotSuccessMessage = true;
+        setTimeout(() => this.showSuccessMessage = false, 3000);
         return false;
       }
     }
@@ -111,14 +83,19 @@ export class LokaalaanvraagComponent implements OnInit {
       if(!(moment(afspraak.start.dateTime).format('LT') === (<HTMLInputElement>document.getElementById("begintijd")).value)){
         return true;
       }else{
+        this.showNotSuccessMessage = true;
+        setTimeout(() => this.showSuccessMessage = false, 3000);
         return false;
       }
     }
   }
 
   checkTijd(){
-    if(true){
-
+    if(this.checkBegintijd_HalfuurEerderDan_AgendaTijd() && this.checkBegintijd_NietHetzelfde() && this.checkEindtijd_KleinerDan_AgendaBegintijd()
+      && this.checkBegintijd_GroterDan_AgendaEindtijd()){
+        return true;
+    }else{
+      return false;
     }
   }
 
@@ -136,12 +113,19 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   volledigeCheck(){
-    
+    if((this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value) == null)){
+      return true;
+    }else if(this.checkTijd() && (this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value) != null)){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   isLoggedIn(): boolean {
     return this.authenticationService.isLoggedIn();
   }
+
   logout(){
     this.firebaseAuth.auth.signOut();
     this.router.navigateByUrl('/');

@@ -4,9 +4,10 @@
     <button class="btn btn-succes" (click)="login()">Login with Google</button>
 </div>
 <div *ngIf="isLoggedIn()" class="form-group">
-    <button class="btn btn-succes" (click)="logout()">Logout</button>
+  <p *ngIf="this.firebaseAuth.auth.currentUser.displayName != null">Welkom {{this.firebaseAuth.auth.currentUser.displayName}}</p>
+  <button class="btn btn-succes" (click)="logout()">Logout</button>
 </div>
-<div class="form-group">
+<div *ngIf="!isLoggedIn()" class="form-group">
     <h2>Login met Email en Wachtwoord:</h2>
     <form #formData='ngForm' #f="ngForm">
         <div class="form-group">

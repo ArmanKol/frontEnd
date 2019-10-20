@@ -2,7 +2,7 @@
   <nav>
     <ul>
       <li ><a routerLink="/">Home</a></li>
-      <li><a routerLink="/registreer">Registreren</a></li>
+      <li *ngIf="!this.firebaseAuth.auth.currentUser"><a routerLink="/registreer">Registreren</a></li>
       <li *ngIf="this.authentication.isAdmin()"><a routerLink="/aanvraag">aangevraagd</a></li>
       <li><a routerLink="/code">Lokaal reservatie/qrCode</a></li>
       <li *ngIf="this.authentication.isAdmin()"><a routerLink="/codeReader">qrCode reader</a></li>
