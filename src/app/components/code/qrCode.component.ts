@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {OnInit} from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import {DataService} from 'src/app/services/data_service/data.service';
+import * as moment from 'moment'
 
 @Component({
   selector: 'qr-code',
@@ -33,7 +34,7 @@ export class QrCode implements OnInit{
 
   append(){
     for(let item of this.items){
-      if(item.gebruiker === this.firebaseAuth.auth.currentUser.email && item.base64 != null && item.status != "progress"){
+      if((item.gebruiker === this.firebaseAuth.auth.currentUser.email && item.base64 != null && item.status != "progress") && (moment().format('YYYY-MM-DD') <= item.datum)){
         this.displayItems.push(item);
       }
     }
