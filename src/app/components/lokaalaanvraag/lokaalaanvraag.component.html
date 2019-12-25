@@ -16,14 +16,24 @@
                 This field is required.</div>
             </div>
             <div class="form-group">
-              <label>Begin tijd</label>
-              <input type="time" id="begintijd" formControlName="begintijd" class="form-control"  [ngClass]="{'is-invalid':submitted && formControls.begintijd.errors}">
+              <label>Begin tijd</label><br>
+              <select id="beginTijd">
+              </select>
               <div class="invalid-feedback" *ngIf="submitted && formControls.begintijd.errors">
                 Invalid tijd.</div>
             </div>
             <div class="form-group">
-                    <label>Eind tijd</label>
-                    <input type="time" id="eindtijd" formControlName="eindtijd"  class="form-control" [ngClass]="{'is-invalid':submitted && formControls.eindtijd.errors}">
+                    <label>Duur</label><br>
+                    <select id="duur">
+                      <option value="0:30">0:30</option>
+                      <option value="1:00">1:00</option>
+                      <option value="1:30">1:30</option>
+                      <option value="2:00">2:00</option>
+                      <option value="2:30">2:30</option>
+                      <option value="3:00">3:00</option>
+                      <option value="3:30">3:30</option>
+                      <option value="4:00">4:00</option>
+                    </select>
                     <div class="invalid-feedback" *ngIf="submitted && formControls.eindtijd.errors">
                       Invalid tijd</div>
             </div>
