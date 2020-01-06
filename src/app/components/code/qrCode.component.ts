@@ -20,16 +20,16 @@ export class QrCode implements OnInit{
 
 
  ngOnInit() {
-   this.firebaseService.getQrcode().subscribe( list =>{
-     this.items = list.map(item =>{
-       return{
-         key: item.key,
-         ...item.payload.val()
-       }
+   //this.firebaseService.getQrcode().subscribe( list =>{
+     //this.items = list.map(item =>{
+       //return{
+         //key: item.key,
+        // ...item.payload.val()
+       //}
 
-     });
-     this.append();
-   });
+     //});
+     //this.append();
+   //});
  }
 
   append(){

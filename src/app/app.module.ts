@@ -1,12 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './components/nav/nav.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularFireModule} from 'angularfire2';
-import { AngularFireDatabaseModule} from 'angularfire2/database';
 import {environment} from '../environments/environment';
 import {DataService} from './services/data_service/data.service';
 import { AanvraagComponent } from './components/aanvraag/aanvraag.component';
@@ -24,6 +24,11 @@ import { GoogleAgenda } from './components/googleAgenda/google-agenda.component'
 import { LoginComponent } from './components/login/login.component';
 import { AuthguardService } from './services/auth_guard_service/authguard.service';
 import { GoogleAPI } from './services/googleAPI_service/googleAPI.service';
+import { MatToolbarModule, MatTableModule, MatExpansionModule, MatIconModule, MatMenuModule, MatListModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, MatTooltipModule, MatSliderModule, MatCheckboxModule, MatSnackBarModule, MatDividerModule, MatDialogModule, MatCardModule } from  '@angular/material';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire';
+
 
 @NgModule({
   declarations: [
@@ -38,7 +43,6 @@ import { GoogleAPI } from './services/googleAPI_service/googleAPI.service';
     QrCodeReader,
     GoogleAgenda,
     LoginComponent
-
   ],
   imports: [
     BrowserModule,
@@ -46,12 +50,36 @@ import { GoogleAPI } from './services/googleAPI_service/googleAPI.service';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule,
     NgxQRCodeModule,
-    ZXingScannerModule
-
+    ZXingScannerModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
+    NgxQRCodeModule,
+    ZXingScannerModule,
+    MatToolbarModule,
+    AngularFireAuthModule,
+    MatButtonModule,
+    MatCardModule, 
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatTooltipModule,
+    MatSliderModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
+    MatDividerModule,
+    MatListModule,
+    MatExpansionModule,
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatGridListModule
   ],
   providers: [DataService, LokaalserviceService, AuthguardService, GoogleAPI],
   bootstrap: [AppComponent]
