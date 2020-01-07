@@ -241,7 +241,7 @@ export class LokaalaanvraagComponent implements OnInit {
 
     if(googleLijstAfspraken.length > 0 && this.checkAfspraakOverlaptAfspraakGoogleAgenda()){
       return true;
-    }else if(googleLijstAfspraken.length = 0 && this.checkAfspraakOverlaptAfspraakDatabase()){
+    }else if(googleLijstAfspraken.length == 0 && this.checkAfspraakOverlaptAfspraakDatabase()){
       return true;
     }else{
       return false;
