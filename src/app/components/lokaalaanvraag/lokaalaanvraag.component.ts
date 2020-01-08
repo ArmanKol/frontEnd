@@ -7,6 +7,8 @@ import { GoogleAPI } from 'src/app/services/googleAPI_service/googleAPI.service'
 import * as moment from 'moment'
 import { Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+
 import { lokaal } from 'src/app/models/lokaal.modal';
 @Component({
   selector: 'app-lokaalaanvraag',
@@ -22,6 +24,9 @@ export class LokaalaanvraagComponent implements OnInit {
   showLokaalMessage: boolean;
   form: FormGroup;
   lokaal: lokaal;
+  user: Observable<firebase.User>;
+  email: string;
+  userid: string;
 
   showDeletedMessage: boolean;
 
@@ -39,7 +44,14 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getUserCredentials()
     this.form = this.fb.group({
+      email: [this.email,[
+
+      ]],
+      id: [this.userid,[
+
+      ]],
       begintijd: ['',[
         Validators.required
       ]],
@@ -50,13 +62,21 @@ export class LokaalaanvraagComponent implements OnInit {
         Validators.required,
       ]],
       status: ['0',[
-
+        
       ]]
     })
     this.form.valueChanges.subscribe((item) => {
       this.lokaal = item;
     })
     this.optionsBeginTijdOpbouwen();
+  }
+
+  getUserCredentials(){
+    this.user = this.firebaseAuth.authState;
+    this.user.subscribe((user) => {
+      this.userid = user.uid;
+      this.email = user.email;
+    })
   }
 
   async aanvraag(){

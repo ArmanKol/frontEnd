@@ -40,12 +40,9 @@ isAdmin(){
       }
 
   qrcode(){
-    var dateVandaag = new Date();
-    var resultJson_date = new Date(this.resultJson.datum);
-
     for(let item of this.lokaalaanvragen){
-      if(item.datum == this.resultJson.datum && dateVandaag.getDate() == resultJson_date.getDate()){
-        if(this.resultJson.eindtijd == item.eindtijd && item.begintijd <= this.resultJson.begintijd && this.resultJson.status != "progress"){
+      if(item.datum == this.resultJson.datum){
+        if(this.resultJson.eindtijd == item.eindtijd  && item.begintijd <= this.resultJson.begintijd && this.resultJson.status != "progress"){
           document.getElementById("qrReader").style.backgroundColor = "green";
           setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
           break;
@@ -54,9 +51,6 @@ isAdmin(){
           setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
           break;
         }
-      }else{
-        document.getElementById("qrReader").style.backgroundColor = "red";
-        setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
       }
     }
   }
