@@ -33,7 +33,7 @@
         </mat-form-field>
         <mat-form-field class="form-input" >
           <label>datum</label>
-          <input matInput  formControlName="datum">
+          <input matInput type="date" id="datum" formControlName="datum" class="form-control" [ngClass]="{'is-invalid':submitted && formControls.datum.errors}">
           <mat-error *ngIf="datum.invalid && datum.touched">
               Vul alstublieft een datum in
           </mat-error>

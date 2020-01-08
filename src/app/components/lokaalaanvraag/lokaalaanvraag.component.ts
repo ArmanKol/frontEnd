@@ -15,6 +15,7 @@ import { lokaal } from 'src/app/models/lokaal.modal';
 })
 export class LokaalaanvraagComponent implements OnInit {
 
+  lokaalaanvragenCollection = [];
   aanvragenlijst: lokaal[];
   showSuccessMessage: boolean;
   showNotSuccessMessage: boolean;
@@ -38,7 +39,6 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.optionsBeginTijdOpbouwen();
     this.form = this.fb.group({
       begintijd: ['',[
         Validators.required
@@ -50,12 +50,13 @@ export class LokaalaanvraagComponent implements OnInit {
         Validators.required,
       ]],
       status: ['0',[
-        
+
       ]]
     })
     this.form.valueChanges.subscribe((item) => {
       this.lokaal = item;
     })
+    this.optionsBeginTijdOpbouwen();
   }
 
   async aanvraag(){
@@ -122,7 +123,7 @@ export class LokaalaanvraagComponent implements OnInit {
 
     var result = false;
 
-    for(let afspraak of this.lokaalaanvragenlijst){
+    for(let afspraak of this.lokaalaanvragenCollection){
       var afspraak_begintijd = new Date(this.getDateVandaag(true)+afspraak.begintijd);
       var afspraak_eindTijd = new Date(this.getDateVandaag(true)+afspraak.eindtijd);
 
@@ -148,7 +149,7 @@ export class LokaalaanvraagComponent implements OnInit {
                 '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30',
                 '18:00','18:30','19:00','19:30','20:00','20:30','21:00'];
 
-    for(let afspraak of this.lokaalaanvragenlijst){
+    for(let afspraak of this.lokaalaanvragenCollection){
        if(moment(afspraak.datum).format('L') === moment(dateVandaag).format('L')){
          array = array.filter(item => item !== afspraak.begintijd);
        }
