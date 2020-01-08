@@ -2,14 +2,14 @@
     <table class="table table-sm">
       <thead>
         <th>Begintijd</th>
-        <th>Eindtijd</th>
+        <th>Duur</th>
         <th>Qr code</th>
       </thead>
-      <ng-container *ngFor="let item of displayItems">
-        <tr class="table-dark">
+      <ng-container *ngFor="let item of items">
+        <tr class="table-dark" *ngIf="item.email == userEmail">
           <td>{{item.begintijd}}</td>
-          <td>{{item.eindtijd}}</td>
-          <td><img src="{{item.base64}}"></td>
+          <td>{{item.duur}}</td>
+          <td><img src="{{item.source}}"></td>
         </tr>
       </ng-container>
     </table>

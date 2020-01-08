@@ -58,7 +58,7 @@ export class LokaalaanvraagComponent implements OnInit {
         Validators.required,
       ]],
       status: ['0',[
-        
+
       ]]
     })
     this.form.valueChanges.subscribe((item) => {
@@ -75,12 +75,10 @@ export class LokaalaanvraagComponent implements OnInit {
   async aanvraag(){
     await this.googleapi.getCalendarItems();
     console.log(this.form.valid)
-    if(this.form.valid){
-      console.log("yes")
+    if(this.form.valid && this.volledigeCheck()){
       this.la.addLokaalAanvraag(this.lokaal);
       this.msb.open("lokaalaanvraag is gelukt!");
     }else{
-      console.log("no")
       this.showNotSuccessMessage = true;
       setTimeout(() => this.showNotSuccessMessage = false, 3000);
     }
@@ -160,7 +158,7 @@ export class LokaalaanvraagComponent implements OnInit {
     return result;
   }
 
-  
+
   optionsBeginTijdOpbouwen(){
     var dateVandaag = new Date();
     var selectobject = (<HTMLInputElement>document.getElementById("beginTijd"));
@@ -247,7 +245,7 @@ export class LokaalaanvraagComponent implements OnInit {
   volledigeCheck(){
     //Haal alle afspraken op in de Google Agenda met de gekozen datum op de pagina.
     var googleLijstAfspraken = this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value);
-    
+
     if(googleLijstAfspraken.length > 0 && this.checkAfspraakOverlaptAfspraakGoogleAgenda()){
       return true;
     }else if(googleLijstAfspraken.length == 0 && this.checkAfspraakOverlaptAfspraakDatabase()){

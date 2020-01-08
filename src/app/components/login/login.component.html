@@ -1,8 +1,4 @@
 <div>
-<div *ngIf="!isLoggedIn()"  class="form-group">
-    <h1>Log in met Google:</h1>
-    <button class="btn btn-succes" (click)="login()">Login with Google</button>
-</div>
 <div *ngIf="isLoggedIn()" class="form-group">
   <p *ngIf="this.firebaseAuth.auth.currentUser.displayName != null">Welkom {{this.firebaseAuth.auth.currentUser.displayName}}</p>
   <button class="btn btn-succes" (click)="logout()">Logout</button>

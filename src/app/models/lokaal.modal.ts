@@ -1,9 +1,10 @@
 export interface lokaal {
     datum?: string;
     begintijd?: string;
-    eindtijd?: string;
+    duur?: string;
     status?: string;
     gebruiker?: string;
     id?: string;
     email?: string;
+    source?: string;
 }

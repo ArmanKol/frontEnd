@@ -12,7 +12,7 @@ export class LokaalaangevraagdComponent implements OnInit {
 
   showLokaalMessage: boolean;
   showQrcodeMessage: boolean;
-  lokaalaanvragenlijst: lokaal[];
+  lokaalaanvragenCollection: lokaal[];
   arrByID = [];
   jsonString: string;
   source: any;
@@ -30,17 +30,19 @@ export class LokaalaangevraagdComponent implements OnInit {
 
 
   onUpdate($key){
+    console.log(this.source);
     if (confirm('wil je dit lokaal verzoek echt goedkeuren?')) {
       this.downloadImage($key);
-      this.lokaalaanvraag.updateLokaalAanvraag($key);
+      this.lokaalaanvraag.updateLokaalAanvraag($key, this.source);
       this.msb.open("lokaalverzoek goedgekeurd")
     }
   }
 
   downloadImage($key){
-    for(let aanvraag of this.lokaalaanvragenlijst){
+    for(let aanvraag of this.lokaalaanvragenCollection){
+      console.log(aanvraag);
       if($key === aanvraag.id){
-        this.jsonString = JSON.stringify({"gebruiker": aanvraag.gebruiker,"begintijd": aanvraag.begintijd, "eindtijd": aanvraag.eindtijd,"datum": aanvraag.datum});
+        this.jsonString = JSON.stringify({"email": aanvraag.email,"begintijd": aanvraag.begintijd, "duur": aanvraag.duur,"datum": aanvraag.datum});
         this.value = this.jsonString;
         break;
       }
@@ -57,21 +59,20 @@ export class LokaalaangevraagdComponent implements OnInit {
 
   onDelete($key) {
     if (confirm('wil je dit lokaal verzoek afwijzen ?')) {
-      console.log($key)
       this.lokaalaanvraag.deleteLokaalAanvraag($key);
       this.msb.open("lokaalverzoek afgekeurd")
     }
   }
 
   ngOnInit() {
-    this.getLokaalAanvragen()
+    this.getLokaalAanvragen();
   }
 
-  getLokaalAanvragen(){
-    this.lokaalaanvraag.getLokaalAanvragen().subscribe(lokaalaanvragen=>{
-      this.lokaalaanvragenlijst = lokaalaanvragen
-    });
-  }
+   getLokaalAanvragen(){
+     this.lokaalaanvraag.getLokaalAanvragen().subscribe(lokaalaanvragen=>{
+       this.lokaalaanvragenCollection = lokaalaanvragen
+     });
+   }
 
   elementType : 'img';
 }

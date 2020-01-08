@@ -39,10 +39,13 @@ isAdmin(){
         });
       }
 
+
+
   qrcode(){
     for(let item of this.lokaalaanvragen){
+      console.log(item);
       if(item.datum == this.resultJson.datum){
-        if(this.resultJson.eindtijd == item.eindtijd  && item.begintijd <= this.resultJson.begintijd && this.resultJson.status != "progress"){
+        if(this.resultJson.duur == item.duur && item.begintijd <= this.resultJson.begintijd && this.resultJson.status != "progress"){
           document.getElementById("qrReader").style.backgroundColor = "green";
           setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
           break;
