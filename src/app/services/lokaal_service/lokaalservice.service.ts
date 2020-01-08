@@ -42,9 +42,9 @@ export class LokaalserviceService {
     return this.aanvragen;
   }
 
-  updateLokaalAanvraag(id: string) {
+  updateLokaalAanvraag(id: string, source: string) {
     try {
-      return this.lokaalaanvragenCollection.doc(id).update({status:"goedgekeurd"});
+      return this.lokaalaanvragenCollection.doc(id).update({status:"goedgekeurd", source: source});
     }
     catch (error) {
       console.log(error);

@@ -44,13 +44,9 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUserCredentials()
+    this.optionsBeginTijdOpbouwen()
     this.form = this.fb.group({
       email: [this.email,[
-
-      ]],
-      id: [this.userid,[
-
       ]],
       begintijd: ['',[
         Validators.required
@@ -67,25 +63,24 @@ export class LokaalaanvraagComponent implements OnInit {
     })
     this.form.valueChanges.subscribe((item) => {
       this.lokaal = item;
-    })
-    this.optionsBeginTijdOpbouwen();
-  }
-
-  getUserCredentials(){
-    this.user = this.firebaseAuth.authState;
-    this.user.subscribe((user) => {
-      this.userid = user.uid;
+      this.user = this.firebaseAuth.authState;
+      this.user.subscribe((user) => {
       this.email = user.email;
+      })
+      this.lokaal.email = this.email;
+      console.log(this.lokaal)
     })
   }
 
   async aanvraag(){
     await this.googleapi.getCalendarItems();
-    console.log(this.volledigeCheck());
-    if(this.volledigeCheck() && this.form.valid){
+    console.log(this.form.valid)
+    if(this.form.valid){
+      console.log("yes")
       this.la.addLokaalAanvraag(this.lokaal);
-      this.msb.open("lokaalaanvraag is gelukt!")
+      this.msb.open("lokaalaanvraag is gelukt!");
     }else{
+      console.log("no")
       this.showNotSuccessMessage = true;
       setTimeout(() => this.showNotSuccessMessage = false, 3000);
     }
@@ -109,6 +104,7 @@ export class LokaalaanvraagComponent implements OnInit {
 
     var result = false;
 
+    //Iteration door de lokaalaanvragen die al in de google agenda staan.
     for(let afspraak of this.getAfsprakenOpDag(datumOpgegeven)){
       var afspraak_begintijd = new Date(afspraak.start.dateTime);
       var afspraak_eindTijd = new Date(afspraak.end.dateTime);
@@ -117,11 +113,11 @@ export class LokaalaanvraagComponent implements OnInit {
       * Als dat wel het geval is dan toon foutmelding en return false.
       * Anders return true
       */
-      if((afspraak_begintijd < eindTijdOpgegeven && afspraak_eindTijd > beginTijdOpgegeven_dateObject) ||
-         (eindTijdOpgegeven > afspraak_begintijd && afspraak_eindTijd > beginTijdOpgegeven_dateObject)){
+      if((afspraak_begintijd.toTimeString() < eindTijdOpgegeven.toTimeString() && afspraak_eindTijd.toTimeString() > beginTijdOpgegeven_dateObject.toTimeString()) ||
+         (eindTijdOpgegeven.toTimeString() > afspraak_begintijd.toTimeString() && afspraak_eindTijd.toTimeString() > beginTijdOpgegeven_dateObject.toTimeString())){
         alert('De opgegeven tijd en duur ligt midden in een bestaande afspraak. Probeer je begin tijd op een latere tijdstip.');
         return false;
-      }else if(eindTijdOpgegeven <= afspraak_begintijd || afspraak_eindTijd <= beginTijdOpgegeven_dateObject){
+      }else if(eindTijdOpgegeven.toTimeString() <= afspraak_begintijd.toTimeString() || afspraak_eindTijd.toTimeString() <= beginTijdOpgegeven_dateObject.toTimeString()){
         result = true;
       }
     }
@@ -144,6 +140,7 @@ export class LokaalaanvraagComponent implements OnInit {
 
     var result = false;
 
+    //Iteration door de lokaalaanvragen die al in de database staan.
     for(let afspraak of this.lokaalaanvragenCollection){
       var afspraak_begintijd = new Date(this.getDateVandaag(true)+afspraak.begintijd);
       var afspraak_eindTijd = new Date(this.getDateVandaag(true)+afspraak.eindtijd);
@@ -152,17 +149,18 @@ export class LokaalaanvraagComponent implements OnInit {
       * Als dat wel het geval is dan toon foutmelding en return false.
       * Anders return true
       */
-      if((afspraak_begintijd < eindTijdOpgegeven && afspraak_eindTijd > beginTijdOpgegeven_dateObject) ||
-         (eindTijdOpgegeven > afspraak_begintijd && afspraak_eindTijd > beginTijdOpgegeven_dateObject)){
+      if((afspraak_begintijd.toTimeString() < eindTijdOpgegeven.toTimeString() && afspraak_eindTijd.toTimeString() > beginTijdOpgegeven_dateObject.toTimeString()) ||
+         (eindTijdOpgegeven.toTimeString() > afspraak_begintijd.toTimeString() && afspraak_eindTijd.toTimeString() > beginTijdOpgegeven_dateObject.toTimeString())){
         alert('De opgegeven tijd en duur ligt midden in een bestaande afspraak. Probeer je begin tijd op een latere tijdstip.');
         return false;
-      }else if(eindTijdOpgegeven <= afspraak_begintijd || afspraak_eindTijd <= beginTijdOpgegeven_dateObject){
+      }else if(eindTijdOpgegeven.toTimeString() <= afspraak_begintijd.toTimeString() || afspraak_eindTijd.toTimeString() <= beginTijdOpgegeven_dateObject.toTimeString()){
         result = true;
       }
     }
     return result;
   }
 
+  
   optionsBeginTijdOpbouwen(){
     var dateVandaag = new Date();
     var selectobject = (<HTMLInputElement>document.getElementById("beginTijd"));
@@ -175,7 +173,6 @@ export class LokaalaanvraagComponent implements OnInit {
          array = array.filter(item => item !== afspraak.begintijd);
        }
     }
-
     for(let value of array){
       var option = document.createElement("option");
       option.setAttribute("value", value);
@@ -244,11 +241,13 @@ export class LokaalaanvraagComponent implements OnInit {
     return items;
   }
 
-
+  /*
+  *
+  */
   volledigeCheck(){
     //Haal alle afspraken op in de Google Agenda met de gekozen datum op de pagina.
     var googleLijstAfspraken = this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value);
-    console.log(typeof(googleLijstAfspraken.length));
+    
     if(googleLijstAfspraken.length > 0 && this.checkAfspraakOverlaptAfspraakGoogleAgenda()){
       return true;
     }else if(googleLijstAfspraken.length == 0 && this.checkAfspraakOverlaptAfspraakDatabase()){
@@ -256,21 +255,6 @@ export class LokaalaanvraagComponent implements OnInit {
     }else{
       return false;
     }
-
-    // if(googleLijstAfspraken.length > 0){
-    //   if(this.checkAfspraakOverlaptAfspraakGoogleAgenda() /*&& this.check_eindTijd_kleiner_dan_beginTijd_agenda_punt()*/){
-    //     //this.getDateVandaag(true);
-    //     return true;
-    //   }else{
-    //     return false;
-    //   }
-    // }else{
-    //   if(this.checkAfspraakOverlaptAfspraakDatabase() /*&& this.check_eindTijd_kleiner_dan_beginTijd_database_afspraak_tijd()*/){
-    //     return true;
-    //   }else{
-    //     return false;
-    //   }
-    // }
   }
 
   isLoggedIn(): boolean {
@@ -285,11 +269,11 @@ export class LokaalaanvraagComponent implements OnInit {
   get datum(){
     return this.form.get('datum');
   }
+  get duur(){
+    return this.form.get('duur');
+  }
   get begintijd(){
     return this.form.get('begintijd');
-  }
-  get eindtijd(){
-    return this.form.get('eindtijd');
   }
 
 }

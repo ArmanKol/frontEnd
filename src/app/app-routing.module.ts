@@ -8,6 +8,8 @@ import { AuthguardService } from './services/auth_guard_service/authguard.servic
 import { QrCode } from './components/Code/qrCode.component';
 import { QrCodeReader } from './components/codeReader/qrCodeReader.component';
 import { GoogleAgenda } from './components/googleAgenda/google-agenda.component';
+import { AangevraagdComponent } from './components/aangevraagd/aangevraagd.component';
+
 
 const routes: Routes = [
   { path: '', component: LoginComponent},
@@ -18,7 +20,9 @@ const routes: Routes = [
   { path: 'code', component: QrCode },
   { path: 'codeReader', component: QrCodeReader},
   { path: 'googleAgenda', component: GoogleAgenda },
-  { path: '**', component: LoginComponent}
+  { path: '**', component: LoginComponent},
+  { path: 'aangevraagd', component: AangevraagdComponent},
+
 ];
 
 @NgModule({
