@@ -9,14 +9,24 @@
           <form [formGroup]="form">
             <mat-form-field class="form-input" >
               <label>begintijd</label>
-              <input matInput  formControlName="begintijd">
+              <select id="beginTijd">
+              </select>
               <mat-error *ngIf="begintijd.invalid && begintijd.touched">
                   Vul alstublieft een begintijd in
               </mat-error>
           </mat-form-field>
           <mat-form-field class="form-input" >
             <label>eindtijd</label>
-            <input matInput  formControlName="eindtijd">
+            <select id="duur">
+                      <option value="0:30">0:30</option>
+                      <option value="1:00">1:00</option>
+                      <option value="1:30">1:30</option>
+                      <option value="2:00">2:00</option>
+                      <option value="2:30">2:30</option>
+                      <option value="3:00">3:00</option>
+                      <option value="3:30">3:30</option>
+                      <option value="4:00">4:00</option>
+             </select>
             <mat-error *ngIf="eindtijd.invalid && eindtijd.touched">
                 Vul alstublieft een begintijd in
             </mat-error>
