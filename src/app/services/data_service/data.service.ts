@@ -3,63 +3,72 @@ import { AngularFireDatabase, AngularFireList} from 'angularfire2/database';
 
 import { FormControl, FormGroup, Validators} from "@angular/forms";
 import { Aanvraag } from 'src/app/models/aanvraag/aanvraag';
+import { aanvraag } from 'src/app/models/aanvraag.modal';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class DataService {
-  constructor(private firebase: AngularFireDatabase) {
-    this.aanvragenlijst =firebase.list('/customers')
+
+  private advertentieCollection: AngularFirestoreCollection<aanvraag>;
+  private aanvragen: Observable<aanvraag[]>;
+
+  userId: string;
+    
+  constructor(private db: AngularFirestore) {
+    this.advertentieCollection = db.collection<aanvraag>('aanvragen');
   }
-  aanvragenlijst: AngularFireList<any>;
   qrCodeLijst: AngularFireList<any>;
 
   i = 0;
 
-
-  form = new FormGroup({
-      $key: new FormControl(null),
-      status: new FormControl('progress'),
-      naam : new FormControl('', Validators.required),
-      email : new FormControl('', Validators.email && Validators.required),
-      achternaam : new FormControl('', Validators.required),
-      wachtwoord : new FormControl('', Validators.required),
-      studentnummer : new FormControl('', Validators.required),
-      opleiding : new FormControl('', Validators.required)
-  })
-
-
-
-  insertAanvraag(aanvraag: Aanvraag){
-    this.aanvragenlijst.push({naam: aanvraag.naam, email: aanvraag.email,      opleiding: aanvraag.opleiding,
-
-     achternaam: aanvraag.achternaam,
-    studentnummer:  aanvraag.studentnummer,    wachtwoord: aanvraag.wachtwoord,
-
-     status: aanvraag.status});
+  async addAanvraag(aanvraag: aanvraag) {
+    try {
+      return this.advertentieCollection.add(aanvraag);
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
-  getAanvragen(){
-    this.aanvragenlijst = this.firebase.list('customers')
-    return this.aanvragenlijst.snapshotChanges();
+  getAdvertenties() {
+    this.aanvragen = this.advertentieCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+            return { id, ...data }; 
+        });
+      })
+    );
+    return this.aanvragen;
   }
 
-  getQrcode(){
-    this.qrCodeLijst =  this.firebase.list('lokaalreserveren');
-    return this.qrCodeLijst.snapshotChanges();
+  //getQrcode(){
+    //this.qrCodeLijst =  this.firebase.list('lokaalreserveren');
+    //return this.qrCodeLijst.snapshotChanges();
+  //}
+
+  updateAanvraag(id: string) {
+    try {
+      return this.advertentieCollection.doc(id).update({status: "goedgekeurd"});
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
-  updateAanvraag($key: string) {
-    this.aanvragenlijst.update($key,
-      {
-        status: "goedgekeurd"
-      });
-  }
-
-  deleteAanvraag($key: string) {
-    this.aanvragenlijst.remove($key);
-    console.log($key)
+  deleteAanvraag(id: string) {
+    try {
+      return this.advertentieCollection.doc(id).delete();
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
 }

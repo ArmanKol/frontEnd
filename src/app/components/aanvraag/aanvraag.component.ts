@@ -3,6 +3,8 @@ import { DataService } from 'src/app/services/data_service/data.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AuthenticationService } from 'src/app/services/authentication_service/authentication.service';
 import { Router } from '@angular/router';
+import { lokaal } from 'src/app/models/lokaal.modal';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-aanvraag',
@@ -11,14 +13,15 @@ import { Router } from '@angular/router';
 })
 export class AanvraagComponent implements OnInit {
 
-  aanvragenlijst = [];
+  lokaalaanvragen: lokaal[];
   arrByID = [];
   showDeletedMessage: boolean;
   showLokaalMessage: boolean;
   Email: string;
   Wachtwoord: string;
 
-  constructor(private aanvraag: DataService, private firebaseAuth: AngularFireAuth,private authenticationService: AuthenticationService,private router: Router) { }
+  constructor(private aanvraag: DataService, private firebaseAuth: AngularFireAuth,
+    private authenticationService: AuthenticationService,private router: Router, private msb: MatSnackBar) { }
 
   filterByID(obj) {
     if (obj.payload.val().status == "progress") {
@@ -29,17 +32,15 @@ export class AanvraagComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.firebaseAuth.auth.currentUser.email);
-    this.isAdmin();
-    this.aanvraag.getAanvragen().subscribe( list =>{
-      this.arrByID = list.filter(this.filterByID)
-      this.aanvragenlijst = this.arrByID.map(item =>{
-        return{
-          key: item.key,
-          ...item.payload.val()
-        }
-      })
-    });
+    //console.log(this.firebaseAuth.auth.currentUser.email);
+    //this.isAdmin();
+    this.lokaalAanvragen()
+  }
+
+  lokaalAanvragen(){
+    this.aanvraag.getAdvertenties().subscribe(lokaalaavraag=>{
+      this.lokaalaanvragen = lokaalaavraag
+    })
   }
 
   logout(){
@@ -60,21 +61,20 @@ export class AanvraagComponent implements OnInit {
     }
   }
 
-  onSubmit($key, wachtwoord, email){
+  onSubmit(id, wachtwoord, email){
     if (confirm('wil je dit lokaal verzoek echt goedkeuren ?')) {
-      console.log(wachtwoord, email);
-      this.aanvraag.updateAanvraag($key);
-      this.showLokaalMessage = true;
+      console.log(id, email);
+      this.aanvraag.updateAanvraag(id);
+      this.msb.open("account geaccepteerd");
       this.firebaseAuth.auth.createUserWithEmailAndPassword(email, wachtwoord);
-      setTimeout(() => this.showLokaalMessage = false, 3000);
     }
   }
 
-  onDelete($key) {
+  onDelete(id) {
     if (confirm('wil je dit lokaal verzoek afwijzen ?')) {
-      this.aanvraag.deleteAanvraag($key);
-      this.showDeletedMessage = true;
-      setTimeout(() => this.showDeletedMessage = false, 3000);
+      this.aanvraag.deleteAanvraag(id);
+      this.msb.open("account afgewezen");
     }
   }
+
 }

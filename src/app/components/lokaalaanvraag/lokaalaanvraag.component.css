@@ -1,1 +1,9 @@
 @import url('https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css');
+
+.form-input{
+    width: 40%;
+    min-width: 250px;
+    margin-bottom: 20px;
+    margin-right: 7px;
+    border-style: solid;
+    border-color: black;}
