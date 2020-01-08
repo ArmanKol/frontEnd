@@ -32,8 +32,7 @@ export class AanvraagComponent implements OnInit {
   }
 
   ngOnInit() {
-    //console.log(this.firebaseAuth.auth.currentUser.email);
-    //this.isAdmin();
+    this.isAdmin();
     this.lokaalAanvragen()
   }
 
