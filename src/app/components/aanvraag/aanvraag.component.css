@@ -1,1 +1,19 @@
 @import url('https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css');
+
+
+  #aanvragen td, #aanvragen th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #aanvragen tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #aanvragen tr:hover {background-color: #ddd;}
+  
+  #aanvragen th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #1a1a1a;
+    color: white;
+  }

@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ){}
 
+  // Functie die de inloggegevens aan de google api geeft, bij correcte gegevens wordt de gebruiker door gestuurd naar de pagina lokaalaanvraag.
   login(){
     this.firebaseAuth.auth.signInWithPopup(new auth.GoogleAuthProvider().addScope('https://www.googleapis.com/auth/calendar')).then
     ((succes) => {this.router.navigateByUrl('/lokaalaanvraag')});
@@ -32,6 +33,8 @@ export class LoginComponent implements OnInit {
     return this.authenticationService.isLoggedIn();
   }
 
+
+  // controlleerd of de inlog gegevens overeen komen met die van het admin account.
   customLogin(){
     if(this.Email === "admin@admin.com"){
       this.firebaseAuth.auth.signInWithEmailAndPassword(
@@ -45,6 +48,7 @@ export class LoginComponent implements OnInit {
       ).then((success) => {this.router.navigateByUrl('/lokaalaanvraag')});
       }
   }
+  
   ngOnInit() {
   }
 

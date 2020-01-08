@@ -1,0 +1,17 @@
+
+  #lokaalaanvragen td, #lokaalaanvragen th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #lokaalaanvragen tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #lokaalaanvragen tr:hover {background-color: #ddd;}
+  
+  #lokaalaanvragen th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #1a1a1a;
+    color: white;
+  }
