@@ -5,7 +5,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { GoogleAPI } from 'src/app/services/googleAPI_service/googleAPI.service';
 import * as moment from 'moment'
-
+import { Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { lokaal } from 'src/app/models/lokaal.modal';
 @Component({
   selector: 'app-lokaalaanvraag',
   templateUrl: './lokaalaanvraag.component.html',
@@ -13,51 +15,59 @@ import * as moment from 'moment'
 })
 export class LokaalaanvraagComponent implements OnInit {
 
-  lokaalaanvragenlijst = [];
-  arrByID = [];
+  aanvragenlijst: lokaal[];
   showSuccessMessage: boolean;
   showNotSuccessMessage: boolean;
   showLokaalMessage: boolean;
+  form: FormGroup;
+  lokaal: lokaal;
+
   showDeletedMessage: boolean;
 
-  constructor(private lokaalaanvraag: LokaalserviceService,
+  constructor(
     private firebaseAuth: AngularFireAuth,
     private authenticationService: AuthenticationService,
     private router: Router,
-    private googleapi: GoogleAPI
+    private googleapi: GoogleAPI,
+    private fb: FormBuilder,
+    private la: LokaalserviceService,
+    private msb: MatSnackBar
     )
   {
   this.googleapi.initClient();
   }
 
-  async onSubmit(){
-    await this.googleapi.getCalendarItems();
+  ngOnInit() {
+    this.optionsBeginTijdOpbouwen();
+    this.form = this.fb.group({
+      begintijd: ['',[
+        Validators.required
+      ]],
+      eindtijd: ['',[
+        Validators.required,
+      ]],
+      datum: ['',[
+        Validators.required,
+      ]],
+      status: ['0',[
+        
+      ]]
+    })
+    this.form.valueChanges.subscribe((item) => {
+      this.lokaal = item;
+    })
+  }
 
-    if(this.volledigeCheck() && this.lokaalaanvraag.form.valid && this.lokaalaanvraag.form.get('$key').value == null){
-      this.lokaalaanvraag.insertLokaalAanvraag(this.lokaalaanvraag.form.value, this.firebaseAuth.auth.currentUser);
-      this.showSuccessMessage = true;
-      setTimeout(() => this.showSuccessMessage = false, 3000);
+  async aanvraag(){
+    await this.googleapi.getCalendarItems();
+    if(this.volledigeCheck() && this.form.valid){
+      this.la.addLokaalAanvraag(this.lokaal);
+      this.msb.open("lokaalaanvraag is gelukt!")
     }else{
       this.showNotSuccessMessage = true;
       setTimeout(() => this.showNotSuccessMessage = false, 3000);
     }
   }
-
-  /*check_eindTijd_kleiner_dan_beginTijd_agenda_punt(){
-    var beginTijdOpgegeven = (<HTMLInputElement>document.getElementById("beginTijd")).value;
-    var duurOpgegeven = (<HTMLInputElement>document.getElementById("duur")).value;
-    var datumOpgegeven = (<HTMLInputElement>document.getElementById("datum")).value;
-    var eindTijd = this.getEindTijd(beginTijdOpgegeven, duurOpgegeven);
-
-    for(let afspraak of this.getAfsprakenOpDag(datumOpgegeven)){
-      if(eindTijd >= new Date('1970/01/01 '+moment(afspraak.start.dateTime).format('LT'))){
-        alert('De opgegeven tijd en duur overlapt een bestaande afspraak. Probeer de duur te verkorten of neem een begintijd dat eerder begint.1');
-        return false;
-      }else{
-        return true;
-      }
-    }
-  }*/
 
   /*
   * Opgegeven afspraak na of voor de afspraak dat in Google Agenda staat.
@@ -130,28 +140,6 @@ export class LokaalaanvraagComponent implements OnInit {
     }
     return result;
   }
-
-  /*check_eindTijd_kleiner_dan_beginTijd_database_afspraak_tijd(){ //Opgegeven afspraak voor de afspraak dat al in de database staat.
-    var beginTijdOpgegeven = (<HTMLInputElement>document.getElementById("beginTijd")).value;
-    var beginTijdOpgegeven_date = new Date('1970/01/01 '+ (<HTMLInputElement>document.getElementById("beginTijd")).value);
-    var duurOpgegeven = (<HTMLInputElement>document.getElementById("duur")).value;
-    var eindTijd = this.getEindTijd(beginTijdOpgegeven, duurOpgegeven);
-
-    var result = false;
-
-    for(let afspraak of this.lokaalaanvragenlijst){
-      var afspraak_begintijd = new Date('1970/01/01 '+afspraak.begintijd);
-      var afspraak_eindtijd = new Date('1970/01/01 '+afspraak.eindtijd);
-      console.log(afspraak);
-      if(eindTijd > afspraak_begintijd && beginTijdOpgegeven_date < afspraak_eindtijd){
-        alert('De opgegeven tijd en duur overlapt een bestaande afspraak. Probeer de duur te verkorten of neem een begintijd dat eerder begint.');
-        return false;
-      }else if(eindTijd <= afspraak_begintijd){
-        result = true;
-      }
-    }
-    return result;
-  }*/
 
   optionsBeginTijdOpbouwen(){
     var dateVandaag = new Date();
@@ -272,25 +260,14 @@ export class LokaalaanvraagComponent implements OnInit {
     this.router.navigateByUrl('/');
   }
 
-  filterByID(obj) {
-    if (obj.payload.val().status == "progress") {
-      return true;
-    } else {
-      return false;
-    }
+  get datum(){
+    return this.form.get('datum');
   }
-
-  ngOnInit() {
-    this.lokaalaanvraag.getLokaalAanvragen().subscribe( list =>{
-      this.arrByID = list.filter(this.filterByID)
-      this.lokaalaanvragenlijst = this.arrByID.map(item =>{
-          return {
-            key: item.key,
-            ...item.payload.val()
-          }
-      })
-      this.optionsBeginTijdOpbouwen();
-    });
+  get begintijd(){
+    return this.form.get('begintijd');
+  }
+  get eindtijd(){
+    return this.form.get('eindtijd');
   }
 
 }

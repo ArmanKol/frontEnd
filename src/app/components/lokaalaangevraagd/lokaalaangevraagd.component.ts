@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LokaalserviceService } from 'src/app/services/lokaal_service/lokaalservice.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { lokaal } from 'src/app/models/lokaal.modal';
 
 @Component({
   selector: 'app-lokaalaangevraagd',
@@ -10,16 +12,13 @@ export class LokaalaangevraagdComponent implements OnInit {
 
   showLokaalMessage: boolean;
   showQrcodeMessage: boolean;
-  lokaalaanvragenlijst = [];
-  showSuccessMessage: boolean;
-  showNotSuccessMessage: boolean;
-  showDeletedMessage: boolean;
+  lokaalaanvragenlijst: lokaal[];
   arrByID = [];
   jsonString: string;
   source: any;
   value: any;
 
-  constructor(private lokaalaanvraag: LokaalserviceService) { }
+  constructor(private lokaalaanvraag: LokaalserviceService, private msb: MatSnackBar) { }
 
   filterByID(obj) {
     if (obj.payload.val().status == "progress") {
@@ -31,17 +30,16 @@ export class LokaalaangevraagdComponent implements OnInit {
 
 
   onUpdate($key){
-    if (confirm('wil je dit lokaal verzoek echt goedkeuren ?')) {
+    if (confirm('wil je dit lokaal verzoek echt goedkeuren?')) {
       this.downloadImage($key);
-      this.lokaalaanvraag.updateLokaalAanvraag($key, this.source);
-      this.showLokaalMessage = true;
-      setTimeout(() => this.showLokaalMessage = false, 3000);
+      this.lokaalaanvraag.updateLokaalAanvraag($key);
+      this.msb.open("lokaalverzoek goedgekeurd")
     }
   }
 
   downloadImage($key){
     for(let aanvraag of this.lokaalaanvragenlijst){
-      if($key === aanvraag.key){
+      if($key === aanvraag.id){
         this.jsonString = JSON.stringify({"gebruiker": aanvraag.gebruiker,"begintijd": aanvraag.begintijd, "eindtijd": aanvraag.eindtijd,"datum": aanvraag.datum});
         this.value = this.jsonString;
         break;
@@ -60,20 +58,17 @@ export class LokaalaangevraagdComponent implements OnInit {
   onDelete($key) {
     if (confirm('wil je dit lokaal verzoek afwijzen ?')) {
       this.lokaalaanvraag.deleteLokaalAanvraag($key);
-      this.showDeletedMessage = true;
-      setTimeout(() => this.showDeletedMessage = false, 3000);
+      this.msb.open("lokaalverzoek afgekeurd")
     }
   }
 
   ngOnInit() {
-    this.lokaalaanvraag.getLokaalAanvragen().subscribe( list =>{
-      this.arrByID = list.filter(this.filterByID)
-      this.lokaalaanvragenlijst = this.arrByID.map(item =>{
-          return {
-            key: item.key,
-            ...item.payload.val()
-          }
-      })
+    this.getLokaalAanvragen()
+  }
+
+  getLokaalAanvragen(){
+    this.lokaalaanvraag.getLokaalAanvragen().subscribe(lokaalaanvragen=>{
+      this.lokaalaanvragenlijst = lokaalaanvragen
     });
   }
 
