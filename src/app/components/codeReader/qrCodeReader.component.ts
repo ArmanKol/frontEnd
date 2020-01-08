@@ -31,7 +31,6 @@ isAdmin(){
 }
 
   handleQrCodeResult(resultString: string) {
-    console.log(resultString);
         this.resultJson = JSON.parse(resultString);
         this.firebaseService.getLokaalAanvragen().subscribe( list =>{
           this.lokaalaanvragen = list;
@@ -42,19 +41,27 @@ isAdmin(){
 
 
   qrcode(){
-    for(let item of this.lokaalaanvragen){
-      console.log(item);
-      if(item.datum == this.resultJson.datum){
-        if(this.resultJson.duur == item.duur && item.begintijd <= this.resultJson.begintijd && this.resultJson.status != "progress"){
-          document.getElementById("qrReader").style.backgroundColor = "green";
-          setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
-          break;
-        }else{
-          document.getElementById("qrReader").style.backgroundColor = "red";
-          setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
-          break;
+    var dateToday = new Date();
+    console.log(dateToday);
+    var resultJson_Date = (new Date(this.resultJson.datum));
+
+    if(dateToday.getDate() == resultJson_Date.getDate() && resultJson_Date.getMonth() == dateToday.getMonth()){
+      for(let item of this.lokaalaanvragen){
+        if(item.datum == this.resultJson.datum){
+          if(this.resultJson.duur == item.duur && item.begintijd <= this.resultJson.begintijd && this.resultJson.status != "progress"){
+            document.getElementById("qrReader").style.backgroundColor = "green";
+            setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
+            break;
+          }else{
+            document.getElementById("qrReader").style.backgroundColor = "red";
+            setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
+            break;
+          }
         }
       }
+    }else{
+      document.getElementById("qrReader").style.backgroundColor = "red";
+      setTimeout(() => document.getElementById("qrReader").style.backgroundColor = "white", 3000);
     }
   }
 }

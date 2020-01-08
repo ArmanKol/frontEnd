@@ -68,13 +68,11 @@ export class LokaalaanvraagComponent implements OnInit {
       this.email = user.email;
       })
       this.lokaal.email = this.email;
-      console.log(this.lokaal)
     })
   }
 
   async aanvraag(){
     await this.googleapi.getCalendarItems();
-    console.log(this.form.valid)
     if(this.form.valid && this.volledigeCheck()){
       this.la.addLokaalAanvraag(this.lokaal);
       this.msb.open("lokaalaanvraag is gelukt!");
@@ -137,9 +135,9 @@ export class LokaalaanvraagComponent implements OnInit {
     var eindTijdOpgegeven = this.getEindTijd(beginTijdOpgegeven, duurOpgegeven);
 
     var result = false;
-
     //Iteration door de lokaalaanvragen die al in de database staan.
     for(let afspraak of this.lokaalaanvragenCollection){
+      console.log(afspraak.length);
       var afspraak_begintijd = new Date(this.getDateVandaag(true)+afspraak.begintijd);
       var afspraak_eindTijd = new Date(this.getDateVandaag(true)+afspraak.eindtijd);
 
@@ -245,10 +243,9 @@ export class LokaalaanvraagComponent implements OnInit {
   volledigeCheck(){
     //Haal alle afspraken op in de Google Agenda met de gekozen datum op de pagina.
     var googleLijstAfspraken = this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value);
-
     if(googleLijstAfspraken.length > 0 && this.checkAfspraakOverlaptAfspraakGoogleAgenda()){
       return true;
-    }else if(googleLijstAfspraken.length == 0 && this.checkAfspraakOverlaptAfspraakDatabase()){
+    }else if(googleLijstAfspraken.length == 0 && this.checkAfspraakOverlaptAfspraakDatabase() || this.lokaalaanvragenCollection.length == 0){
       return true;
     }else{
       return false;

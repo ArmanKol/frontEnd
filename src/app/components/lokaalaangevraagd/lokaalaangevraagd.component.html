@@ -7,7 +7,7 @@
         <th>begintijd</th>
         <th>duur</th>
       </thead>
-      <ng-container *ngFor="let lokaalaanvraag of lokaalaanvragenlijst">
+      <ng-container *ngFor="let lokaalaanvraag of lokaalaanvragenCollection">
         <tr class="table-dark" *ngIf="lokaalaanvraag.status == 0">
           <td>{{lokaalaanvraag.datum}}</td>
           <td>{{lokaalaanvraag.begintijd}}</td>
