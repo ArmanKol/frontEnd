@@ -7,24 +7,18 @@
         <th>eindtijd</th>
       </thead>
       <ng-container *ngFor="let lokaalaanvraag of lokaalaanvragenlijst">
-        <tr class="table-dark">
+        <tr class="table-dark" *ngIf="lokaalaanvraag.status == 0">
           <td>{{lokaalaanvraag.datum}}</td>
           <td>{{lokaalaanvraag.begintijd}}</td>
           <td>{{lokaalaanvraag.eindtijd}}</td>
           <td>
-              <button class="btn btn-outline-info" (click)="onUpdate(lokaalaanvraag.key)">lokaal verzoek goedkeuren</button>
-              <button class="btn btn-outline-danger" (click)="onDelete(lokaalaanvraag.key)">lokaal verzoek afwijzen</button>
-              <button class="btn btn-outline-danger" (click)="downloadImage(lokaalaanvraag.key)">qr-code genereren</button>
+              <button class="btn btn-outline-info" (click)="onUpdate(lokaalaanvraag.id)">lokaal verzoek goedkeuren</button>
+              <button class="btn btn-outline-danger" (click)="onDelete(lokaalaanvraag.id)">lokaal verzoek afwijzen</button>
+              <button class="btn btn-outline-danger" (click)="downloadImage(lokaalaanvraag.id)">qr-code genereren</button>
           </td>
         </tr>
       </ng-container>
     </table>
-    <div class="alert alert-danger" *ngIf="showDeletedMessage">
-      lokaalverzoek afgekeurd.
-</div>
-<div class="alert alert-danger" *ngIf="showLokaalMessage">
-  lokaal verzoek goedgekeurd.
-</div>
 <div class="alert alert-danger" *ngIf="showQrcodeMessage">
   Qr code is gegenereerd.
 </div>

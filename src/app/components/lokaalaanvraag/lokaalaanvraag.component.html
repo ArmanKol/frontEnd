@@ -6,39 +6,29 @@
 </div>
 <div class="row">
         <div class="col-md-5">
-          <form [formGroup]="this.lokaalaanvraag.form" (ngSubmit)="onSubmit()">
-            <input type="hidden" formControlName="$key">
-            <input type="hidden" formControlName="status"  class="form-control" placeholder="progress">
-            <div class="form-group">
-              <label>Datum</label>
-              <input type="date" id="datum" formControlName="datum" class="form-control" [ngClass]="{'is-invalid':submitted && formControls.datum.errors}">
-              <div class="invalid-feedback" *ngIf="submitted && formControls.datum.errors">
-                This field is required.</div>
-            </div>
-            <div class="form-group">
-              <label>Begin tijd</label>
-              <input type="time" id="begintijd" formControlName="begintijd" class="form-control"  [ngClass]="{'is-invalid':submitted && formControls.begintijd.errors}">
-              <div class="invalid-feedback" *ngIf="submitted && formControls.begintijd.errors">
-                Invalid tijd.</div>
-            </div>
-            <div class="form-group">
-                    <label>Eind tijd</label>
-                    <input type="time" id="eindtijd" formControlName="eindtijd"  class="form-control" [ngClass]="{'is-invalid':submitted && formControls.eindtijd.errors}">
-                    <div class="invalid-feedback" *ngIf="submitted && formControls.eindtijd.errors">
-                      Invalid tijd</div>
-            </div>
-            <div class="form-group">
-              <input type="submit" class="btn btn-primary" value="Submit">
-            </div>
-          </form>
-          <div class="alert alert-info"  *ngIf="showSuccessMessage">
-            Submitted successfully.
-          </div>
-          <div class="alert alert-info"  *ngIf="showNotSuccessMessage">
-            Submitted unsuccessfully.
-          </div>
-          <div id="errormessage">
-
-          </div>
+          <form [formGroup]="form">
+            <mat-form-field class="form-input" >
+              <label>begintijd</label>
+              <input matInput  formControlName="begintijd">
+              <mat-error *ngIf="begintijd.invalid && begintijd.touched">
+                  Vul alstublieft een begintijd in
+              </mat-error>
+          </mat-form-field>
+          <mat-form-field class="form-input" >
+            <label>eindtijd</label>
+            <input matInput  formControlName="eindtijd">
+            <mat-error *ngIf="eindtijd.invalid && eindtijd.touched">
+                Vul alstublieft een begintijd in
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-input" >
+          <label>datum</label>
+          <input matInput  formControlName="datum">
+          <mat-error *ngIf="datum.invalid && datum.touched">
+              Vul alstublieft een datum in
+          </mat-error>
+      </mat-form-field>
+      <button (click)="aanvraag()">aanvraag</button>
+               </form>
         </div>
       </div>

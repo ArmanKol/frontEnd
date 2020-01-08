@@ -5,7 +5,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { GoogleAPI } from 'src/app/services/googleAPI_service/googleAPI.service';
 import * as moment from 'moment'
-
+import { Validators, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { lokaal } from 'src/app/models/lokaal.modal';
 @Component({
   selector: 'app-lokaalaanvraag',
   templateUrl: './lokaalaanvraag.component.html',
@@ -13,29 +15,53 @@ import * as moment from 'moment'
 })
 export class LokaalaanvraagComponent implements OnInit {
 
-  lokaalaanvragenlijst = [];
+  aanvragenlijst: lokaal[];
   showSuccessMessage: boolean;
   showNotSuccessMessage: boolean;
   showLokaalMessage: boolean;
+  form: FormGroup;
+  lokaal: lokaal;
+
   showDeletedMessage: boolean;
 
-  constructor(private lokaalaanvraag: LokaalserviceService,
+  constructor(
     private firebaseAuth: AngularFireAuth,
     private authenticationService: AuthenticationService,
     private router: Router,
-    private googleapi: GoogleAPI
+    private googleapi: GoogleAPI,
+    private fb: FormBuilder,
+    private la: LokaalserviceService,
+    private msb: MatSnackBar
     )
   {
   this.googleapi.initClient();
   }
 
-  async onSubmit(){
-    await this.googleapi.getCalendarItems();
+  ngOnInit() {
+    this.form = this.fb.group({
+      begintijd: ['',[
+        Validators.required
+      ]],
+      eindtijd: ['',[
+        Validators.required,
+      ]],
+      datum: ['',[
+        Validators.required,
+      ]],
+      status: ['0',[
+        
+      ]]
+    })
+    this.form.valueChanges.subscribe((item) => {
+      this.lokaal = item;
+    })
+  }
 
-    if(this.volledigeCheck() && this.lokaalaanvraag.form.valid && this.lokaalaanvraag.form.get('$key').value == null){
-      //this.lokaalaanvraag.insertLokaalAanvraag(this.lokaalaanvraag.form.value, this.firebaseAuth.auth.currentUser);
-      this.showSuccessMessage = true;
-      setTimeout(() => this.showSuccessMessage = false, 3000);
+  async aanvraag(){
+    await this.googleapi.getCalendarItems();
+    if(this.volledigeCheck() && this.form.valid){
+      this.la.addLokaalAanvraag(this.lokaal);
+      this.msb.open("lokaalaanvraag is gelukt!")
     }else{
       //alert("Op dit moment is het lokaal in gebruik van: "+moment(item.start.dateTime).format('LT')+" tot "+moment(item.end.dateTime).format('LT'));
     }
@@ -43,8 +69,8 @@ export class LokaalaanvraagComponent implements OnInit {
 
 
   checkBegintijd_GroterDan_AgendaEindtijd(){
-    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
-      if((<HTMLInputElement>document.getElementById("begintijd")).value >= moment(afspraak.end.dateTime).format('LT')){
+    for(let afspraak of this.getAfsprakenOpDag(this.form.get('datum').value)){
+      if(this.form.get('begintijd').value >= moment(afspraak.end.dateTime).format('LT')){
         return true;
       }else{
         this.showNotSuccessMessage = true;
@@ -55,8 +81,8 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   checkEindtijd_KleinerDan_AgendaBegintijd(){
-    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
-      if((<HTMLInputElement>document.getElementById("eindtijd")).value <= moment(afspraak.start.dateTime).format('LT')){
+    for(let afspraak of this.getAfsprakenOpDag(this.form.get('datum').value)){
+      if(this.form.get('eindtijd').value <= moment(afspraak.start.dateTime).format('LT')){
         return true;
       }else{
         this.showNotSuccessMessage = true;
@@ -67,8 +93,8 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   checkBegintijd_HalfuurEerderDan_AgendaTijd(){
-    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
-      if((<HTMLInputElement>document.getElementById("begintijd")).value <= moment(afspraak.start.dateTime).subtract(0.5, 'hours').format('LT')){
+    for(let afspraak of this.getAfsprakenOpDag(this.form.get('datum').value)){
+      if(this.form.get('begindatum').value <= moment(afspraak.start.dateTime).subtract(0.5, 'hours').format('LT')){
         return true;
       }else{
         this.showNotSuccessMessage = true;
@@ -79,8 +105,8 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   checkBegintijd_NietHetzelfde(){
-    for(let afspraak of this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value)){
-      if(!(moment(afspraak.start.dateTime).format('LT') === (<HTMLInputElement>document.getElementById("begintijd")).value)){
+    for(let afspraak of this.getAfsprakenOpDag(this.form.get('datum').value)){
+      if(!(moment(afspraak.start.dateTime).format('LT') === this.form.get('begintijd').value)){
         return true;
       }else{
         this.showNotSuccessMessage = true;
@@ -113,9 +139,10 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   volledigeCheck(){
-    if((this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value) == null)){
+    console.log(this.form.get('datum').value)
+    if((this.getAfsprakenOpDag(this.form.get('datum').value) == null)){
       return true;
-    }else if(this.checkTijd() && (this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value) != null)){
+    }else if(this.checkTijd() && (this.getAfsprakenOpDag(this.form.get('datum').value) != null)){
       return true;
     }else{
       return false;
@@ -131,7 +158,16 @@ export class LokaalaanvraagComponent implements OnInit {
     this.router.navigateByUrl('/');
   }
 
-  ngOnInit() {
+
+
+  get datum(){
+    return this.form.get('datum');
+  }
+  get begintijd(){
+    return this.form.get('begintijd');
+  }
+  get eindtijd(){
+    return this.form.get('eindtijd');
   }
 
 }

@@ -13,11 +13,11 @@ const routes: Routes = [
   { path: '', component: LoginComponent},
   { path: 'login', component: LoginComponent},
   { path: 'registreer', component: RegistreerComponent },
-  { path: 'aanvraag', component: AanvraagComponent, canActivate: [AuthguardService] },
-  { path: 'lokaalaanvraag', component: LokaalaanvraagComponent, canActivate: [AuthguardService] },
-  { path: 'code', component: QrCode, canActivate: [AuthguardService] },
-  { path: 'codeReader', component: QrCodeReader, canActivate: [AuthguardService] },
-  { path: 'googleAgenda', component: GoogleAgenda, canActivate: [AuthguardService] },
+  { path: 'aanvraag', component: AanvraagComponent},
+  { path: 'lokaalaanvraag', component: LokaalaanvraagComponent },
+  { path: 'code', component: QrCode },
+  { path: 'codeReader', component: QrCodeReader},
+  { path: 'googleAgenda', component: GoogleAgenda },
   { path: '**', component: LoginComponent}
 ];
 
