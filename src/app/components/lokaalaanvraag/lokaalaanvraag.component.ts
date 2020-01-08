@@ -43,7 +43,7 @@ export class LokaalaanvraagComponent implements OnInit {
       begintijd: ['',[
         Validators.required
       ]],
-      eindtijd: ['',[
+      duur: ['',[
         Validators.required,
       ]],
       datum: ['',[
@@ -61,6 +61,7 @@ export class LokaalaanvraagComponent implements OnInit {
 
   async aanvraag(){
     await this.googleapi.getCalendarItems();
+    console.log(this.volledigeCheck());
     if(this.volledigeCheck() && this.form.valid){
       this.la.addLokaalAanvraag(this.lokaal);
       this.msb.open("lokaalaanvraag is gelukt!")
@@ -227,7 +228,7 @@ export class LokaalaanvraagComponent implements OnInit {
   volledigeCheck(){
     //Haal alle afspraken op in de Google Agenda met de gekozen datum op de pagina.
     var googleLijstAfspraken = this.getAfsprakenOpDag((<HTMLInputElement>document.getElementById("datum")).value);
-
+    console.log(typeof(googleLijstAfspraken.length));
     if(googleLijstAfspraken.length > 0 && this.checkAfspraakOverlaptAfspraakGoogleAgenda()){
       return true;
     }else if(googleLijstAfspraken.length == 0 && this.checkAfspraakOverlaptAfspraakDatabase()){
