@@ -7,15 +7,11 @@
 <div class="row">
   <div class="col-md-5">
     <form [formGroup]="form">
-      <mat-form-field class="form-input" >
         <label>begintijd</label>
         <select formControlName="begintijd" id="beginTijd">
+        
         </select>
-        <mat-error *ngIf="begintijd.invalid && begintijd.touched">
-          Vul alstublieft een begintijd in
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field class="form-input" >
+      <mat-form-field class="form-input">
         <label>duur</label>
         <select formControlName="duur" id="duur">
           <option value="0:30">0:30</option>
@@ -31,9 +27,9 @@
           Vul alstublieft een begintijd in
         </mat-error>
       </mat-form-field>
-      <mat-form-field class="form-input" >
+      <mat-form-field class="form-input">
         <label>datum</label>
-        <input matInput type="date" id="datum" formControlName="datum" class="form-control" [ngClass]="{'is-invalid':submitted && formControls.datum.errors}">
+        <input matInput type="date" id="datum" formControlName="datum">
         <mat-error *ngIf="datum.invalid && datum.touched">
           Vul alstublieft een datum in
         </mat-error>

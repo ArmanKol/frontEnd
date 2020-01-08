@@ -44,13 +44,9 @@ export class LokaalaanvraagComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUserCredentials()
+    this.optionsBeginTijdOpbouwen()
     this.form = this.fb.group({
       email: [this.email,[
-
-      ]],
-      id: [this.userid,[
-
       ]],
       begintijd: ['',[
         Validators.required
@@ -62,29 +58,29 @@ export class LokaalaanvraagComponent implements OnInit {
         Validators.required,
       ]],
       status: ['0',[
-
+        
       ]]
     })
     this.form.valueChanges.subscribe((item) => {
       this.lokaal = item;
-    })
-    this.optionsBeginTijdOpbouwen();
-  }
-
-  getUserCredentials(){
-    this.user = this.firebaseAuth.authState;
-    this.user.subscribe((user) => {
-      this.userid = user.uid;
+      this.user = this.firebaseAuth.authState;
+      this.user.subscribe((user) => {
       this.email = user.email;
+      })
+      this.lokaal.email = this.email;
+      console.log(this.lokaal)
     })
   }
 
   async aanvraag(){
     await this.googleapi.getCalendarItems();
-    if(this.volledigeCheck() && this.form.valid){
-      //this.la.addLokaalAanvraag(this.lokaal);
+    console.log(this.form.valid)
+    if(this.form.valid){
+      console.log("yes")
+      this.la.addLokaalAanvraag(this.lokaal);
       this.msb.open("lokaalaanvraag is gelukt!");
     }else{
+      console.log("no")
       this.showNotSuccessMessage = true;
       setTimeout(() => this.showNotSuccessMessage = false, 3000);
     }
@@ -164,7 +160,7 @@ export class LokaalaanvraagComponent implements OnInit {
     return result;
   }
 
-
+  
   optionsBeginTijdOpbouwen(){
     var dateVandaag = new Date();
     var selectobject = (<HTMLInputElement>document.getElementById("beginTijd"));
@@ -177,7 +173,6 @@ export class LokaalaanvraagComponent implements OnInit {
          array = array.filter(item => item !== afspraak.begintijd);
        }
     }
-
     for(let value of array){
       var option = document.createElement("option");
       option.setAttribute("value", value);
@@ -274,11 +269,11 @@ export class LokaalaanvraagComponent implements OnInit {
   get datum(){
     return this.form.get('datum');
   }
-  get begintijd(){
-    return this.form.get('begintijd');
-  }
   get duur(){
     return this.form.get('duur');
+  }
+  get begintijd(){
+    return this.form.get('begintijd');
   }
 
 }

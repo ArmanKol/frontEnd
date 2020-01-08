@@ -57,6 +57,7 @@ export class LokaalaangevraagdComponent implements OnInit {
 
   onDelete($key) {
     if (confirm('wil je dit lokaal verzoek afwijzen ?')) {
+      console.log($key)
       this.lokaalaanvraag.deleteLokaalAanvraag($key);
       this.msb.open("lokaalverzoek afgekeurd")
     }

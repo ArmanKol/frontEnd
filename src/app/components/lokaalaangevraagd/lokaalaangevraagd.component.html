@@ -4,13 +4,13 @@
       <thead>
         <th>datum</th>
         <th>begintijd</th>
-        <th>eindtijd</th>
+        <th>duur</th>
       </thead>
       <ng-container *ngFor="let lokaalaanvraag of lokaalaanvragenlijst">
         <tr class="table-dark" *ngIf="lokaalaanvraag.status == 0">
           <td>{{lokaalaanvraag.datum}}</td>
           <td>{{lokaalaanvraag.begintijd}}</td>
-          <td>{{lokaalaanvraag.eindtijd}}</td>
+          <td>{{lokaalaanvraag.duur}}</td>
           <td>
               <button class="btn btn-outline-info" (click)="onUpdate(lokaalaanvraag.id)">lokaal verzoek goedkeuren</button>
               <button class="btn btn-outline-danger" (click)="onDelete(lokaalaanvraag.id)">lokaal verzoek afwijzen</button>

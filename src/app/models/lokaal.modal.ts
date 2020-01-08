@@ -5,4 +5,5 @@ export interface lokaal {
     status?: string;
     gebruiker?: string;
     id?: string;
+    email?: string;
 }
